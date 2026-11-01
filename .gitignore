@@ -13,6 +13,11 @@ dist/
 
 # Personal document
 /src/document/ZackyArthaRaysha_CV_ID.pdf
+# Internal project documentation
+/COPY.md
+/DESIGN.md
+/IMPLEMENTATION_PLAN.md
+/PRD.md
 
 # Caches and test output
 .vite/
