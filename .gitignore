@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+**/dist/
+
+# Environment files
+.env*
+!.env.example
+!**/.env.example
+
+# Personal document
+/src/document/ZackyArthaRaysha_CV_ID.pdf
+
+# Caches and test output
+.vite/
+**/.vite/
+.cache/
+**/.cache/
+coverage/
+
+# Logs and temporary files
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+~$*
+tmp/
+temp/
+
+# Operating system files
+.DS_Store
+**/.DS_Store
+Thumbs.db
+**/Thumbs.db
+desktop.ini
+**/desktop.ini
+
+# Local editor settings
+.vscode/
+.idea/
+*.suo
+*.user
+*.code-workspace

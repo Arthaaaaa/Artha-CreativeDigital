@@ -1,0 +1,106 @@
+.floating-dock-slot {
+  display: flex;
+  justify-content: center;
+  padding: 30px 16px 38px;
+}
+
+.floating-dock {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: 100%;
+  height: 70px;
+  padding: 2px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(174, 198, 230, .2);
+  border-radius: 18px;
+  background: rgba(12, 19, 30, .78);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .24), inset 0 1px rgba(255, 255, 255, .08);
+  backdrop-filter: blur(16px);
+}
+
+.floating-dock-item {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(174, 198, 230, .17);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(35, 48, 67, .92), rgba(14, 22, 34, .96));
+  color: #d7e0ed;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .08);
+  transform-origin: center bottom;
+  transition: border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.floating-dock-item:hover,
+.floating-dock-item:focus-visible {
+  border-color: rgba(115, 218, 240, .54);
+  color: #f4fbff;
+  box-shadow: 0 0 18px rgba(57, 221, 245, .14), inset 0 1px rgba(255, 255, 255, .12);
+}
+
+.floating-dock-item:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 3px;
+}
+
+.floating-dock-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floating-dock-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke-width: 1.7;
+}
+
+.floating-dock-tooltip {
+  position: absolute;
+  z-index: 2;
+  top: -34px;
+  left: 50%;
+  padding: 5px 9px;
+  border: 1px solid rgba(174, 198, 230, .18);
+  border-radius: 7px;
+  background: rgba(13, 20, 31, .96);
+  color: #e7eef8;
+  font-size: 11px;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .floating-dock-slot {
+    padding-block: 24px 30px;
+  }
+
+  .floating-dock {
+    height: 68px;
+    padding: 2px 10px;
+    gap: 6px;
+  }
+
+  .floating-dock-item {
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  .floating-dock-tooltip {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-dock-item {
+    transition: none;
+  }
+}
