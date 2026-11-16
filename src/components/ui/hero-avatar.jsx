@@ -137,12 +137,16 @@ export default function HeroAvatar({ anchorRef, excited = false }) {
         const nextDocked = rect.bottom <= 0 || rect.top >= window.innerHeight
         const dockingChanged = nextDocked !== docked
         docked = nextDocked
+        const isMobile = window.innerWidth <= 768
         const size = docked
-          ? Math.min(window.innerWidth <= 767 ? 78 : 112, window.innerWidth * 0.2)
-          : window.innerWidth <= 767 ? 36 : 44
-        const margin = window.innerWidth <= 767 ? 18 : 28
-        const left = docked ? window.innerWidth - size - margin : rect.right + 8
+          ? (isMobile ? clamp(Math.round(window.innerWidth * 0.13), 44, 52) : Math.min(112, window.innerWidth * 0.2))
+          : (isMobile ? 36 : 44)
+        const margin = isMobile ? 20 : 28
+        const left = docked
+          ? window.innerWidth - size - margin
+          : Math.min(rect.right + 8, window.innerWidth - size - 12)
         const top = docked ? window.innerHeight - size - margin : rect.top + (rect.height - size) / 2
+        stage.dataset.docked = docked ? 'true' : 'false'
 
         if (dockingChanged) {
           stage.classList.add('is-transitioning')

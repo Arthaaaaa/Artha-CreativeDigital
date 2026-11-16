@@ -57,6 +57,36 @@
   height: 100%;
   object-fit: contain;
   background: #090d14;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.stories-card video.is-ready {
+  opacity: 1;
+}
+
+.stories-skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 35%, rgba(53, 109, 255, .18), transparent 62%), linear-gradient(155deg, rgba(19, 31, 49, .95), rgba(9, 13, 20, .98));
+}
+
+.stories-skeleton::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  transform: translateX(-100%);
+  background: linear-gradient(105deg, transparent 28%, rgba(174, 198, 230, .08) 44%, rgba(57, 221, 245, .16) 50%, rgba(174, 198, 230, .08) 56%, transparent 72%);
+  animation: stories-skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes stories-skeleton-shimmer {
+  to {
+    transform: translateX(100%);
+  }
 }
 
 .stories-progress {

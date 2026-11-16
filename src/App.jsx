@@ -1,8 +1,15 @@
 import { lazy, Suspense, useEffect, useId, useRef, useState } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import { useReducedMotion } from 'motion/react'
 import UseAnimations from 'react-useanimations'
 import arrowUpRight from 'react-useanimations/lib/arrowUpRight'
-import { contact, projects, whatsappMessage } from './data/site.js'
+import {
+  caseStudyCards,
+  contact,
+  freeTemplateUrl,
+  projects,
+  whatsappMessage,
+  whatsappSessionMessage,
+} from './data/site.js'
 import HeroGradient from './HeroGradient.jsx'
 import { Particles } from './Particles.tsx'
 import { LayoutTextFlip } from './components/ui/layout-text-flip.jsx'
@@ -37,6 +44,8 @@ const navItems = [
   { label: 'Beranda', href: '#home', id: 'home' },
   { label: 'Karya', href: '#work', id: 'work' },
   { label: 'Layanan', href: '#services', id: 'services' },
+  { label: 'Cara Kerja', href: '#workflow', id: 'workflow' },
+  { label: 'Template & Sesi', href: '#resources', id: 'resources' },
   { label: 'Tentang', href: '#about', id: 'about' },
 ]
 
@@ -48,9 +57,9 @@ function Sparkle({ className = '' }) {
   return <svg className={className} viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M24 2.5 29.5 18.5 45.5 24 29.5 29.5 24 45.5 18.5 29.5 2.5 24 18.5 18.5 24 2.5Z" fill={`url(#${gradientId})`} stroke="rgba(255,255,255,.9)" strokeWidth="1.2" /><defs><linearGradient id={gradientId} x1="11" y1="8" x2="37" y2="40"><stop stopColor="#fff" /><stop offset=".42" stopColor="#aab9d1" /><stop offset=".7" stopColor="#4269a8" /><stop offset="1" stopColor="#f5ffff" /></linearGradient></defs></svg>
 }
 
-function whatsappHref() {
+function whatsappHref(customMessage = whatsappMessage) {
   const number = contact.whatsappNumber.replace(/\D/g, '')
-  return number ? `https://wa.me/${number}?text=${encodeURIComponent(whatsappMessage)}` : ''
+  return number ? `https://wa.me/${number}?text=${encodeURIComponent(customMessage)}` : ''
 }
 
 function Nav() {
@@ -94,8 +103,8 @@ function Nav() {
         <NavbarLogo onClick={closeMenu}><SparkMark className="brand-mark" /><span>Artha</span></NavbarLogo>
         <NavItems items={items} activeLink={`#${active}`} onItemClick={closeMenu} />
         {contactUrl
-          ? <NavbarButton href={contactUrl} target="_blank" rel="noreferrer">Diskusikan proyek</NavbarButton>
-          : <NavbarButton href="#contact" onClick={closeMenu}>Diskusikan proyek</NavbarButton>}
+          ? <NavbarButton href={contactUrl} target="_blank" rel="noreferrer">Diskusikan Proyek</NavbarButton>
+          : <NavbarButton href="#contact" onClick={closeMenu}>Diskusikan Proyek</NavbarButton>}
       </NavBody>
 
       <MobileNav className={menuOpen ? 'is-open' : ''}>
@@ -106,8 +115,8 @@ function Nav() {
         <MobileNavMenu id="primary-navigation-mobile" isOpen={menuOpen} onClose={closeMenu}>
           <NavItems items={items} activeLink={`#${active}`} onItemClick={closeMenu} className="nav-links-mobile" />
           {contactUrl
-            ? <NavbarButton href={contactUrl} target="_blank" rel="noreferrer" onClick={closeMenu}>Diskusikan proyek</NavbarButton>
-            : <NavbarButton href="#contact" onClick={closeMenu}>Diskusikan proyek</NavbarButton>}
+            ? <NavbarButton href={contactUrl} target="_blank" rel="noreferrer" onClick={closeMenu}>Diskusikan Proyek</NavbarButton>
+            : <NavbarButton href="#contact" onClick={closeMenu}>Diskusikan Proyek</NavbarButton>}
         </MobileNavMenu>
       </MobileNav>
     </Navbar>
@@ -115,10 +124,11 @@ function Nav() {
 }
 
 function RoleLine() {
-  return <div className="role-wrap">
-    <LayoutTextFlip text="Seorang " words={roles} duration={3000} />
-    <span className="sr-only">Seorang {roles.join(', ')}.</span>
-  </div>
+  return <p className="role-wrap">
+    <LayoutTextFlip text="Menggabungkan peran seorang " words={roles} duration={3000} />
+    <span className="role-suffix" aria-hidden="true">{' '}untuk mengubah ide menjadi sistem digital yang fungsional.</span>
+    <span className="sr-only">Menggabungkan peran seorang {roles.join(', ')} untuk mengubah ide menjadi sistem digital yang fungsional.</span>
+  </p>
 }
 
 function HeroArtwork() {
@@ -180,12 +190,12 @@ function Hero() {
   return <section className="hero section-shell" id="home" aria-labelledby="hero-title">
     <HeroGradient />
     <div className="hero-copy">
-      <p className="identity-badge" ref={identityBadgeRef}><Sparkle />Creative Developer</p>
-      <h1 id="hero-title">Hai, aku Artha.</h1>
+      <p className="identity-badge" ref={identityBadgeRef}><Sparkle /><span>Hai, aku Artha — Creative Developer</span></p>
+      <h1 id="hero-title">Bangun Website Berkarakter &amp; Otomasi Kerja Bisnis dengan AI.</h1>
       <RoleLine />
-      <p className="hero-support">Aku membantu bisnis lewat website, desain, dan otomatisasi kerja dengan AI.</p>
+      <p className="hero-support">Membantu pemilik bisnis, UMKM, dan tim hadir lebih profesional lewat website yang dirancang khusus (bukan sekadar template pasaran) serta memangkas pekerjaan manual berulang menggunakan alur kerja AI.</p>
       <div className="hero-actions">
-        <a className="button button-primary" href="#contact" onPointerEnter={playAvatarExcited} onPointerLeave={resetAvatarAnimation}><span className="particle-field" aria-hidden="true">{Array.from({ length: 10 }, (_, i) => <i className="floating-point" key={i} />)}</span><span>Diskusikan proyek</span></a>
+        <a className="button button-primary" href="#contact" onPointerEnter={playAvatarExcited} onPointerLeave={resetAvatarAnimation}><span className="particle-field" aria-hidden="true">{Array.from({ length: 10 }, (_, i) => <i className="floating-point" key={i} />)}</span><span>Diskusikan Proyek</span></a>
         <a
           className="button button-secondary"
           href="#work"
@@ -196,7 +206,7 @@ function Hero() {
             if (!event.currentTarget.contains(event.relatedTarget)) setWorkFolderOpen(false)
           }}
         >
-          <span>Lihat karya</span>
+          <span>Lihat Karya ↗</span>
           <span className="hero-work-folder" aria-hidden="true" inert>
             <GlassFolder
               label=""
@@ -209,6 +219,9 @@ function Hero() {
               files={[{ name: 'Karya' }, { name: 'Eksperimen' }, { name: 'Desain' }]}
             />
           </span>
+        </a>
+        <a className="button button-tertiary" href="#resources">
+          <span>Ambil Template Gratis</span>
         </a>
       </div>
     </div>
@@ -246,7 +259,7 @@ function ProjectPreviewVideo({ src, label }) {
 
     const observer = new IntersectionObserver(([entry]) => {
       setIsNearViewport(entry.isIntersecting)
-    }, { rootMargin: '180px 0px' })
+    }, { rootMargin: '280px 0px' })
     observer.observe(preview)
 
     return () => {
@@ -281,8 +294,14 @@ function ProjectPreviewVideo({ src, label }) {
       muted
       loop
       playsInline
-      preload="none"
+      preload="metadata"
       aria-hidden="true"
+      onLoadedMetadata={(event) => {
+        if (event.currentTarget.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+          setHasFrame(true)
+          setPlaybackFailed(false)
+        }
+      }}
       onLoadedData={(event) => {
         if (event.currentTarget.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
           setHasFrame(true)
@@ -316,77 +335,250 @@ function WorkSection() {
   const aiAutomation = projects[2]
   return <section className="work-section section-space" id="work" aria-labelledby="work-title">
     <div className="section-inner">
-      <SectionHeading eyebrow="Karya pilihan" title="Proyek yang pernah dan sedang aku kerjakan." description="Mulai dari website dan eksperimen AI hingga karya visual yang aku kembangkan." />
+      <SectionHeading
+        eyebrow="KARYA PILIHAN"
+        title="Proyek dan sistem yang pernah aku bangun."
+        description="Mulai dari pengembangan website bisnis, sistem otomasi operasional dengan AI, hingga produksi visual berdaya retensi tinggi."
+      />
+      <div className="case-study-grid">
+        {caseStudyCards.map((card) => <div className="case-study-reveal-shell" key={card.id}>
+          <TiltCard as="article" className={`case-study-card case-study-card-${card.id}`}>
+            <div className="case-study-card-top">
+              <div className="project-labels case-study-labels">
+                <span className="project-status">Live</span>
+                <span className="project-origin case-study-badge">{card.badge}</span>
+              </div>
+              <h3>{card.title}</h3>
+              <p className="case-study-description">{card.description}</p>
+            </div>
+            <div className="case-study-actions">
+              <a
+                className="button button-primary case-study-btn-primary"
+                href={card.primaryUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>{card.primaryLabel}</span>
+              </a>
+              <a
+                className="button button-secondary case-study-btn-secondary"
+                href={card.secondaryUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>{card.secondaryLabel}</span>
+              </a>
+            </div>
+          </TiltCard>
+        </div>)}
+      </div>
       <div className="featured-project">
         <TiltCard className="project-preview-tilt">
-          <ProjectPreviewVideo src={rumaPreview} label="Ruma Coffee Website" />
+          <ProjectPreviewVideo src={rumaPreview} label={ruma.title} />
         </TiltCard>
         <div className="project-info">
-          <div className="project-labels"><span className="project-status">Live</span><span className="project-origin">Proyek pribadi</span></div>
-          <p className="project-type">Website</p>
+          <div className="project-labels">
+            <span className="project-status">{ruma.status}</span>
+            <span className="project-origin">{ruma.badge}</span>
+          </div>
+          <p className="project-type">{ruma.type}</p>
           <h3>{ruma.title}</h3>
-          <p className="project-note">Website Ruma Coffee beserta demo dashboard-nya.</p>
+          <p className="project-note">{ruma.description}</p>
           <div className="project-links">
             <ProjectAuraLink href={ruma.projectUrl}>Kunjungi website Ruma</ProjectAuraLink>
-            <ProjectAuraLink href="https://arthaaaaa.github.io/ruma-coffee/projects/ruma-coffee/admin-demo/">Kunjungi dashboard Ruma (demo)</ProjectAuraLink>
+            <ProjectAuraLink href={ruma.demoUrl}>Kunjungi dashboard Ruma (demo)</ProjectAuraLink>
           </div>
         </div>
       </div>
       <div className="featured-project featured-project-office">
         <div className="project-info">
-          <div className="project-labels"><span className="project-status">Live</span><span className="project-origin">Proyek pribadi</span></div>
+          <div className="project-labels">
+            <span className="project-status">{office.status}</span>
+            <span className="project-origin">{office.badge}</span>
+          </div>
           <p className="project-type">{office.type}</p>
           <h3>{office.title}</h3>
-          <p className="project-note">Eksperimen dashboard untuk otomasi kerja dengan AI.</p>
+          <p className="project-note">{office.description}</p>
           <ProjectAuraLink href={office.projectUrl}>Kunjungi Office</ProjectAuraLink>
         </div>
         <TiltCard className="project-preview-tilt">
-          <ProjectPreviewVideo src={officePreview} label="Visual Office Orchestra Dashboard" />
+          <ProjectPreviewVideo src={officePreview} label={office.title} />
         </TiltCard>
       </div>
       <div className="featured-project stories-project">
         <div className="project-info">
-          <div className="project-labels"><span className="project-status">Live</span><span className="project-origin">Proyek pribadi</span></div>
+          <div className="project-labels">
+            <span className="project-status">{aiAutomation.status}</span>
+            <span className="project-origin">{aiAutomation.badge}</span>
+          </div>
           <p className="project-type">{aiAutomation.title}</p>
           <h3>{aiAutomation.subtitle}</h3>
           <p className="project-note">{aiAutomation.description}</p>
         </div>
         <StoriesCarousel />
       </div>
-      <div className="work-placeholder"><span className="work-placeholder-star"><Sparkle /></span><p>Karya lainnya akan ditampilkan setelah pratinjau siap.</p></div>
+      <div className="work-placeholder"><span className="work-placeholder-star"><Sparkle /></span><p>Eksperimen dan studi kasus terbaru juga didokumentasikan secara rutin di TikTok &amp; Instagram.</p></div>
     </div>
   </section>
 }
 
 const services = [
-  { id: 'website', title: 'Pembuatan website', description: 'Website yang membantu bisnis menjelaskan layanan dan hadir lebih profesional secara online.', visual: 'browser' },
-  { id: 'design', title: 'Desain grafis', description: 'Visual untuk brand, produk, marketplace, dan kebutuhan konten digital.', visual: 'poster' },
-  { id: 'ai', title: 'Otomatisasi kerja dengan AI', description: 'Membantu pekerjaan berulang berjalan lebih praktis dengan bantuan AI, sesuai kebutuhan bisnis.', visual: 'workflow' },
-  { id: 'motion', title: 'Motion Graphics', description: 'Mengubah ide dan cerita menjadi pengalaman visual yang dinamis melalui motion design, storytelling, dan eksplorasi AI.', visual: 'motion' },
+  {
+    id: 'website',
+    title: 'Pembuatan Website Berkarakter',
+    description: 'Website profil bisnis, landing page konversi tinggi, dan web aplikasi yang cepat, responsif di HP, serta punya identitas visual kuat—jauh dari kesan template AI pasaran.',
+    features: [
+      <>Desain kustom berbasis sistem (<code>DESIGN.md</code>), bukan template pasaran</>,
+      'Tampilan responsif & nyaman diakses lewat layar HP',
+      'Performa loading cepat & struktur halaman terarah',
+      'Siap diintegrasikan dengan dashboard atau alur kontak bisnis',
+    ],
+    ctaLabel: 'Diskusikan kebutuhan website',
+    visual: 'browser',
+  },
+  {
+    id: 'ai',
+    title: 'Otomatisasi Operasional dengan AI',
+    description: 'Pangkas waktu kerja tim dari tugas-tugas berulang (rekap data, laporan, pengelolaan dokumen, hingga integrasi sistem) menggunakan workflow otomasi dan AI yang berjalan otomatis.',
+    ctaLabel: 'Diskusikan otomasi kerja',
+    visual: 'workflow',
+  },
+  {
+    id: 'motion',
+    title: 'Short-Form Motion Graphics',
+    description: 'Mengubah penjelasan produk teknologi, SaaS, atau edukasi yang rumit menjadi video vertikal pendek yang dinamis, mudah dipahami, dan menahan perhatian penonton dari detik pertama.',
+    ctaLabel: 'Diskusikan produksi visual',
+    visual: 'motion',
+  },
 ]
 
 function ServicesSection() {
   const renderService = (service) => <div className={`service-reveal-shell service-reveal-shell-${service.id}`} key={service.id}>
     <TiltCard as="article" className={`service-card service-${service.id}`}>
       <div className={`service-visual visual-${service.visual}`}>
-        {service.visual === 'browser' && <video className="service-build-video" autoPlay muted loop playsInline preload="metadata" aria-hidden="true"><source src={websiteBuildVideo} type="video/mp4" /></video>}
-        {service.visual === 'poster' && <div className="poster-visual"><span>ART</span><i /></div>}
+        {service.visual === 'browser' && <div className="service-video-frame"><video className="service-build-video" autoPlay muted loop playsInline preload="metadata" aria-hidden="true"><source src={websiteBuildVideo} type="video/mp4" /></video></div>}
         {service.visual === 'workflow' && <AiWorkflowPipeline />}
         {service.visual === 'motion' && <ServiceMotionPreview />}
       </div>
-      <div className="service-copy"><h3>{service.title}</h3><p>{service.description}</p><a href={service.id === 'motion' ? '#work' : '#contact'} className="service-link">{service.id === 'motion' ? 'Lihat eksplorasi' : 'Diskusikan kebutuhan'} <ButtonArrow /></a></div>
+      <div className="service-copy">
+        <h3>{service.title}</h3>
+        <p>{service.description}</p>
+        {service.features && <ul className="service-features">
+          {service.features.map((feature, index) => <li key={index}>
+            <span className="service-feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.2 6.6 11.3 12.5 4.8" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </span>
+            <span>{feature}</span>
+          </li>)}
+        </ul>}
+        <a href="#contact" className="service-link">{service.ctaLabel} <ButtonArrow /></a>
+      </div>
     </TiltCard>
   </div>
 
   return <section className="services-section section-space" id="services" aria-labelledby="services-title">
     <div className="section-inner">
-      <SectionHeading eyebrow="Layanan" title="Apa yang bisa kita bangun?" />
+      <SectionHeading eyebrow="LAYANAN" title="Apa yang bisa kita bangun bersama?" />
       <div className="service-grid">
         <div className="service-column service-column-left">
-          {services.filter((service) => service.id === 'website' || service.id === 'motion').map(renderService)}
+          {services.filter((service) => service.id === 'website').map(renderService)}
         </div>
         <div className="service-column service-column-right">
-          {services.filter((service) => service.id === 'design' || service.id === 'ai').map(renderService)}
+          {services.filter((service) => service.id === 'ai' || service.id === 'motion').map(renderService)}
+        </div>
+      </div>
+    </div>
+  </section>
+}
+
+const workflowSteps = [
+  {
+    step: 'Langkah 01',
+    title: 'Audit & Design Brief',
+    description: <>Kita mulai dengan memetakan tujuan bisnis, target audiens, dan aturan desain (<code>DESIGN.md</code>) agar solusi yang dibangun tepat sasaran sejak hari pertama.</>,
+  },
+  {
+    step: 'Langkah 02',
+    title: 'AI-Accelerated Build',
+    description: 'Proses penulisan kode, penyusunan komponen, dan perakitan alur otomasi dipercepat menggunakan ekosistem AI modern sehingga pengerjaan jauh lebih efisien.',
+  },
+  {
+    step: 'Langkah 03',
+    title: 'Human Polish & Uji Coba',
+    description: 'Penyempurnaan manual pada tata letak, micro-interaction, kontras visual, hingga kenyamanan tampilan di layar HP sebelum proyek diluncurkan.',
+  },
+]
+
+function WorkflowSection() {
+  return <section className="workflow-section section-space" id="workflow" aria-labelledby="workflow-title">
+    <div className="section-inner">
+      <SectionHeading
+        eyebrow="CARA KERJA"
+        title="Cepat karena AI, presisi karena kendali manusia."
+        description="AI mempercepat pembuatan fondasi dari nol, tapi arah bisnis dan detail kualitas tetap dikerjakan secara terukur."
+      />
+      <div className="workflow-grid">
+        {workflowSteps.map((item) => <div className="workflow-reveal-shell" key={item.step}>
+          <TiltCard as="article" className="workflow-card">
+            <span className="workflow-step-badge">{item.step}</span>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </TiltCard>
+        </div>)}
+      </div>
+    </div>
+  </section>
+}
+
+function ResourcesSection() {
+  const sessionUrl = whatsappHref(whatsappSessionMessage)
+
+  return <section className="resources-section section-space" id="resources" aria-labelledby="resources-title">
+    <div className="section-inner">
+      <SectionHeading
+        eyebrow="UNTUK KREATOR & PEMULA"
+        title="Mau ngulik sendiri? Mulai dari sini."
+      />
+      <div className="resources-grid">
+        <div className="resource-reveal-shell">
+          <TiltCard as="article" className="resource-card resource-card-free">
+            <div className="resource-card-top">
+              <span className="resource-badge resource-badge-free">Gratis</span>
+              <h3>Template Sistem AI (<code>skill.md</code> &amp; Design Brief)</h3>
+              <p>Ambil kumpulan file konfigurasi instruksi AI dan panduan kerangka desain yang aku gunakan di eksperimen konten TikTok &amp; Instagram agar hasil prompt kamu lebih rapi dan konsisten.</p>
+            </div>
+            <div className="resource-card-footer">
+              <a
+                className="button button-secondary resource-cta"
+                href={freeTemplateUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span>Ambil Template Gratis ↗</span>
+              </a>
+            </div>
+          </TiltCard>
+        </div>
+
+        <div className="resource-reveal-shell">
+          <TiltCard as="article" className="resource-card resource-card-session">
+            <div className="resource-card-top">
+              <span className="resource-badge resource-badge-limited">Slot Terbatas</span>
+              <h3>1-on-1 Guided Session (Bimbingan Privat)</h3>
+              <p>Sesi pendampingan langsung via Zoom/Google Meet (60–90 menit) untuk bantu kamu merakit website pertama atau menyusun workflow AI dari nol tanpa buang waktu berjam-jam di tahap revisi.</p>
+            </div>
+            <div className="resource-card-footer">
+              <a
+                className="button button-primary resource-cta"
+                href={sessionUrl || '#contact'}
+                target={sessionUrl ? '_blank' : undefined}
+                rel={sessionUrl ? 'noreferrer' : undefined}
+              >
+                <span>Tanya Jadwal Sesi Bimbingan</span>
+                <ButtonArrow />
+              </a>
+            </div>
+          </TiltCard>
         </div>
       </div>
     </div>
@@ -402,15 +594,21 @@ function AboutSection() {
         <AboutSocialProof />
       </div>
       <div className="about-copy">
-        <p className="section-eyebrow">ABOUT ME</p>
+        <p className="section-eyebrow">TENTANG AKU</p>
         <h2 id="about-title">INTRO</h2>
-        <p className="about-description">Hai, aku Artha, seorang Creative Developer yang menggabungkan desain, teknologi, dan AI untuk menciptakan pengalaman digital yang menarik sekaligus fungsional.</p>
-        <p className="about-description">Aku berfokus pada pengembangan website, desain grafis, dan AI workflow automation. Aku senang mengeksplorasi ide, bereksperimen dengan pendekatan baru, dan mengubah konsep menjadi karya digital yang memiliki karakter visual serta tujuan yang jelas.</p>
-        <p className="about-description">Saat ini, aku terbuka untuk proyek freelance dan kolaborasi yang memungkinkan ide-ide baru berkembang menjadi sesuatu yang nyata.</p>
+        <p className="about-description">Hai, aku Artha, seorang Creative Developer yang menggabungkan desain antarmuka, rekayasa web, dan kecerdasan buatan (AI) untuk membangun produk digital yang berkarakter sekaligus fungsional.</p>
+        <p className="about-description">Lewat akun TikTok dan Instagram, aku aktif mendokumentasikan berbagai eksperimen pembuatan website dengan AI dan otomasi kerja yang kini telah ditonton lebih dari 200.000+ kali secara organik oleh komunitas kreator, pembelajar, dan pelaku bisnis.</p>
+        <p className="about-description">Saat ini, aku berfokus membantu pemilik bisnis dan tim merancang website profesional serta membangun sistem otomasi AI yang memangkas jam kerja manual berulang.</p>
       </div>
     </div>
   </section>
 }
+
+const contactFlowSteps = [
+  '1. Ceritakan kebutuhan via WA',
+  '2. Bedah solusi & estimasi (Gratis)',
+  '3. Eksekusi proyek',
+]
 
 function ContactSection() {
   const link = whatsappHref()
@@ -419,10 +617,15 @@ function ContactSection() {
       <div className="contact-panel">
         <span className="contact-light-sweep" aria-hidden="true" />
         <Sparkle className="contact-sparkle" />
-        <p className="section-eyebrow">Mari mulai dari kebutuhanmu</p>
-        <h2 id="contact-title">Punya proyek yang ingin dibangun?</h2>
-        <p className="contact-description">Ceritakan kebutuhanmu. Kita mulai dari tujuan dan solusi yang paling masuk akal.</p>
-        <p className="consultation-note">Konsultasi awal gratis.</p>
+        <p className="section-eyebrow">MARI MULAI DARI KEBUTUHANMU</p>
+        <h2 id="contact-title">Punya proyek atau alur kerja yang ingin dibangun?</h2>
+        <p className="contact-description">Ceritakan masalah atau rencana bisnismu. Kita mulai dari solusi yang paling masuk akal.</p>
+        <div className="contact-flow-steps" aria-label="Alur diskusi proyek">
+          {contactFlowSteps.map((step, index) => <span className="contact-flow-item" key={step}>
+            <span className="contact-flow-pill">{step}</span>
+            {index < contactFlowSteps.length - 1 && <span className="contact-flow-arrow" aria-hidden="true">→</span>}
+          </span>)}
+        </div>
         {link ? <a className="button button-primary contact-button" href={link} target="_blank" rel="noreferrer">Mulai diskusi di WhatsApp <ButtonArrow /></a> : <div className="contact-pending"><button className="button button-primary contact-button" type="button" disabled>Mulai diskusi di WhatsApp <ButtonArrow /></button><p>Placeholder: tautan WhatsApp menunggu nomor terverifikasi.</p></div>}
       </div>
     </div>
@@ -431,7 +634,7 @@ function ContactSection() {
 
 function Footer() {
   return <footer className="site-footer">
-    <div className="footer-main section-inner"><a href="#home" className="brand footer-brand"><SparkMark className="brand-mark" /><span>Artha</span></a><nav aria-label="Navigasi footer"><a href="#work">Karya</a><a href="#services">Layanan</a><a href="#about">Tentang</a><a href="#contact">Diskusikan proyek</a></nav><a className="back-top" href="#home">Kembali ke atas <span aria-hidden="true">↑</span></a></div>
+    <div className="footer-main section-inner"><a href="#home" className="brand footer-brand"><SparkMark className="brand-mark" /><span>Artha</span></a><nav aria-label="Navigasi footer"><a href="#work">Karya</a><a href="#services">Layanan</a><a href="#workflow">Cara Kerja</a><a href="#resources">Template &amp; Sesi</a><a href="#about">Tentang</a><a href="#contact">Diskusikan Proyek</a></nav><a className="back-top" href="#home">Kembali ke atas <span aria-hidden="true">↑</span></a></div>
     <div className="footer-signature section-inner" aria-hidden="true">ARTHA</div>
     <p className="copyright">© {new Date().getFullYear()} Artha</p>
   </footer>
@@ -449,6 +652,8 @@ export default function App() {
       <Hero />
       <WorkSection />
       <ServicesSection />
+      <WorkflowSection />
+      <ResourcesSection />
       <AboutSection />
       <ContactSection />
     </main>

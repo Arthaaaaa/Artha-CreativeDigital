@@ -35,8 +35,8 @@ export default function StoriesCarousel() {
   const [progress, setProgress] = useState(0)
   const [isMuted, setIsMuted] = useState(true)
   const [isNearViewport, setIsNearViewport] = useState(false)
-  const [hasEnteredViewport, setHasEnteredViewport] = useState(false)
   const [metadataReady, setMetadataReady] = useState(false)
+  const [frameReady, setFrameReady] = useState(false)
   const [videoError, setVideoError] = useState('')
   const [playbackBlocked, setPlaybackBlocked] = useState(false)
 
@@ -46,14 +46,12 @@ export default function StoriesCarousel() {
 
     if (!('IntersectionObserver' in window)) {
       setIsNearViewport(true)
-      setHasEnteredViewport(true)
       return undefined
     }
 
     const observer = new IntersectionObserver(([entry]) => {
       setIsNearViewport(entry.isIntersecting)
-      if (entry.isIntersecting) setHasEnteredViewport(true)
-    }, { rootMargin: '160px 0px' })
+    }, { rootMargin: '360px 0px' })
     observer.observe(carousel)
     return () => observer.disconnect()
   }, [])
@@ -101,6 +99,7 @@ export default function StoriesCarousel() {
     setActiveIndex(nextIndex)
     setProgress(0)
     setMetadataReady(false)
+    setFrameReady(false)
     setVideoError('')
     setPlaybackBlocked(false)
   }
@@ -114,10 +113,21 @@ export default function StoriesCarousel() {
   }
 
   const handleMetadata = (event) => {
-    const duration = event.currentTarget.duration
+    const video = event.currentTarget
+    const duration = video.duration
     setMetadataReady(true)
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      setFrameReady(true)
+    }
     if (!Number.isFinite(duration) || duration <= 0) {
       setVideoError('Durasi video tidak tersedia. Gunakan panah untuk berpindah.')
+    }
+  }
+
+  const handleLoadedData = (event) => {
+    if (event.currentTarget.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      setFrameReady(true)
+      setMetadataReady(true)
     }
   }
 
@@ -162,7 +172,7 @@ export default function StoriesCarousel() {
     className="stories-carousel"
     role="region"
     aria-roledescription="carousel"
-    aria-label="Motion Graphic Content"
+    aria-label="High-Retention Motion Graphic Series"
     tabIndex={0}
     onKeyDown={handleKeyDown}
     onPointerDown={handlePointerDown}
@@ -183,26 +193,30 @@ export default function StoriesCarousel() {
             ? { duration: 0 }
             : { type: 'spring', stiffness: 150, damping: 24 }}
         >
+          {!frameReady && !videoError && <div className="stories-skeleton" aria-hidden="true" />}
           <video
             ref={videoRef}
-            src={hasEnteredViewport ? stories[activeIndex] : undefined}
+            className={frameReady ? 'is-ready' : ''}
+            src={`${stories[activeIndex]}#t=0.001`}
             autoPlay={!prefersReducedMotion && isNearViewport}
             muted={isMuted}
             playsInline
-            preload={isNearViewport ? 'metadata' : 'none'}
+            preload="metadata"
             controls={Boolean(prefersReducedMotion || playbackBlocked)}
             aria-label={`Motion graphic ${activeIndex + 1} dari ${stories.length}`}
             onLoadedMetadata={handleMetadata}
+            onLoadedData={handleLoadedData}
             onTimeUpdate={updateProgress}
-            onPlay={() => setPlaybackBlocked(false)}
+            onPlay={() => {
+              setPlaybackBlocked(false)
+              setFrameReady(true)
+            }}
             onEnded={() => {
               setProgress(1)
               if (!prefersReducedMotion) selectStory(activeIndex + 1, 1)
             }}
             onError={() => setVideoError('Video ini tidak dapat dimuat. Gunakan panah untuk berpindah.')}
           />
-          {!isNearViewport && !videoError && <span className="stories-status" role="status">Video dimuat saat carousel terlihat.</span>}
-          {isNearViewport && !metadataReady && !videoError && <span className="stories-status" role="status">Memuat video…</span>}
           {videoError && <span className="stories-status" role="status">{videoError}</span>}
           {prefersReducedMotion && <span className="stories-motion-note">Mode gerak terbatas: putar video dengan kontrol.</span>}
         </motion.div>

@@ -115,6 +115,7 @@ export function useScrollStory(rootRef) {
           }
 
           revealChildren('.work-section .section-heading', { rotate: 0, stagger: 0.08, staggerFrom: 'center' })
+          select('.case-study-reveal-shell').forEach((card) => reveal([card], card, { distance: 64, duration: 0.9 }))
 
           select('.featured-project').forEach((project) => {
             reveal([project], project)
@@ -151,65 +152,13 @@ export function useScrollStory(rootRef) {
           reveal(select('.work-placeholder'), select('.work-placeholder'), { distance: 32, rotate: 1, duration: 0.7 })
 
           revealChildren('.services-section .section-heading', { rotate: 0, stagger: 0.08, staggerFrom: 'center' })
-
-          gsap.fromTo(select('.service-website .browser-visual'),
-            { clipPath: 'inset(0 100% 0 0 round 10px)' },
-            {
-              clipPath: 'inset(0 0% 0 0 round 10px)',
-              duration: 0.72,
-              ease: 'power3.inOut',
-              clearProps: 'clipPath',
-              scrollTrigger: { trigger: select('.service-website')[0], start: 'top 78%', once: true },
-            },
-          )
-          gsap.fromTo(select('.browser-layout > *'),
-            { scaleX: 0, transformOrigin: 'left center', autoAlpha: 0.35 },
-            {
-              scaleX: 1,
-              autoAlpha: 1,
-              duration: 0.38,
-              stagger: 0.09,
-              ease: 'power2.out',
-              clearProps: 'transform,opacity,visibility',
-              scrollTrigger: { trigger: select('.service-website')[0], start: 'top 75%', once: true },
-            },
-          )
-          gsap.fromTo(select('.poster-visual'),
-            { clipPath: 'inset(100% 0 0 0)', y: 18, autoAlpha: 0 },
-            {
-              clipPath: 'inset(0% 0 0 0)',
-              y: 0,
-              autoAlpha: 1,
-              duration: 0.66,
-              ease: 'power3.out',
-              clearProps: 'clipPath,transform,opacity,visibility',
-              scrollTrigger: { trigger: select('.service-design')[0], start: 'top 82%', once: true },
-            },
-          )
-          gsap.fromTo(select('.workflow-visual b'),
-            { scaleX: 0, transformOrigin: 'left center' },
-            {
-              scaleX: 1,
-              duration: 0.42,
-              stagger: 0.16,
-              ease: 'power2.out',
-              clearProps: 'transform',
-              scrollTrigger: { trigger: select('.service-ai')[0], start: 'top 82%', once: true },
-            },
-          )
-          gsap.fromTo(select('.workflow-visual i'),
-            { scale: 0.55, autoAlpha: 0 },
-            {
-              scale: 1,
-              autoAlpha: 1,
-              duration: 0.42,
-              stagger: 0.13,
-              ease: 'back.out(1.7)',
-              clearProps: 'transform,opacity,visibility',
-              scrollTrigger: { trigger: select('.service-ai')[0], start: 'top 82%', once: true },
-            },
-          )
           select('.service-reveal-shell').forEach((card) => reveal([card], card))
+
+          revealChildren('.workflow-section .section-heading', { rotate: 0, stagger: 0.08, staggerFrom: 'center' })
+          select('.workflow-reveal-shell').forEach((card) => reveal([card], card, { distance: 64, duration: 0.9 }))
+
+          revealChildren('.resources-section .section-heading', { rotate: 0, stagger: 0.08, staggerFrom: 'center' })
+          select('.resource-reveal-shell').forEach((card) => reveal([card], card, { distance: 64, duration: 0.9 }))
 
           reveal(select('.about-art'), select('.about-art'))
           revealChildren('.about-copy', { distance: 72, rotate: 0, stagger: 0.08, staggerFrom: 'center' })
