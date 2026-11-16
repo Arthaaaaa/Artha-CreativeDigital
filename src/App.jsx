@@ -329,6 +329,83 @@ function ProjectAuraLink({ href, children }) {
   </a>
 }
 
+function CaseStudyPreview({ url, title }) {
+  const viewportRef = useRef(null)
+  const [isNearViewport, setIsNearViewport] = useState(false)
+  const [iframeReady, setIframeReady] = useState(false)
+  const [scale, setScale] = useState(0.4)
+  const hostname = url.replace(/^https?:\/\//, '').replace(/\/$/, '')
+
+  useEffect(() => {
+    const viewport = viewportRef.current
+    if (!viewport) return undefined
+
+    const updateScale = () => {
+      const width = viewport.clientWidth
+      if (width > 0) setScale(width / 1280)
+    }
+    updateScale()
+
+    let resizeObserver
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(updateScale)
+      resizeObserver.observe(viewport)
+    } else {
+      window.addEventListener('resize', updateScale)
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      setIsNearViewport(true)
+      return () => {
+        resizeObserver?.disconnect()
+        window.removeEventListener('resize', updateScale)
+      }
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setIsNearViewport(true)
+    }, { rootMargin: '320px 0px' })
+    observer.observe(viewport)
+
+    return () => {
+      observer.disconnect()
+      resizeObserver?.disconnect()
+      window.removeEventListener('resize', updateScale)
+    }
+  }, [])
+
+  return <a
+    className="case-study-browser"
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={`Buka live preview ${title}`}
+  >
+    <div className="case-study-browser-bar" aria-hidden="true">
+      <div className="case-study-dots"><span /><span /><span /></div>
+      <span className="case-study-url">{hostname}</span>
+      <span className="case-study-open-tag">Live Preview ↗</span>
+    </div>
+    <div
+      className="case-study-viewport"
+      ref={viewportRef}
+      style={{ '--preview-scale': scale }}
+    >
+      {!iframeReady && <div className="project-preview-skeleton" aria-hidden="true" />}
+      {isNearViewport && <iframe
+        className={`case-study-iframe${iframeReady ? ' is-ready' : ''}`}
+        src={url}
+        title={`Pratinjau ${title}`}
+        loading="lazy"
+        tabIndex={-1}
+        aria-hidden="true"
+        onLoad={() => setIframeReady(true)}
+      />}
+      <div className="case-study-viewport-vignette" aria-hidden="true" />
+    </div>
+  </a>
+}
+
 function WorkSection() {
   const ruma = projects[0]
   const office = projects[1]
@@ -344,6 +421,7 @@ function WorkSection() {
         {caseStudyCards.map((card) => <div className="case-study-reveal-shell" key={card.id}>
           <TiltCard as="article" className={`case-study-card case-study-card-${card.id}`}>
             <div className="case-study-card-top">
+              <CaseStudyPreview url={card.primaryUrl} title={card.title} />
               <div className="project-labels case-study-labels">
                 <span className="project-status">Live</span>
                 <span className="project-origin case-study-badge">{card.badge}</span>
